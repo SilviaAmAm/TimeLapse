@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TimeLapse</string>
+    <string name="timelapse_duration">How long to take photos for (in hours)</string>
+    <string name="example_duration">1</string>
+    <string name="photos_dt">How often should photos be taken (in minutes)</string>
+    <string name="example_dt">5</string>
+    <string name="check_input_button_txt">Check inputs</string>
+</resources>
