@@ -24,6 +24,7 @@ public class DisplayCheckedInputs extends AppCompatActivity {
     }
 
     public void confirmInputs(View view){
-
+        Intent intent = new Intent(this, StartTakingPhotos.class);
+        startActivity(intent);
     }
 }
