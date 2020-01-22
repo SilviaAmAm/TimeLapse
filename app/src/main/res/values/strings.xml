@@ -5,4 +5,5 @@
     <string name="photos_dt">How often should photos be taken (in minutes)</string>
     <string name="example_dt">5</string>
     <string name="check_input_button_txt">Check inputs</string>
+    <string name="confirm_input_button_txt">Proceed</string>
 </resources>
