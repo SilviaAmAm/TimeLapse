@@ -40,32 +40,36 @@ public class DisplayCheckedInputs extends AppCompatActivity {
     }
 
     public void confirmInputs(View view){
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+        Intent startCamera = new Intent(this, CameraActivity.class);
+        startActivity(startCamera);
 
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                System.out.print("Hello\n");
-            }
-
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-
-                Uri photoURI = FileProvider.getUriForFile(
-                        this,
-                        "com.example.android.fileprovider",
-                        photoFile
-                );
-
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, 1);
-                galleryAddPic();
-            }
-        }
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//
+//            File photoFile = null;
+//            try {
+//                photoFile = createImageFile();
+//            } catch (IOException ex) {
+//                // Error occurred while creating the File
+//                System.out.print("Hello\n");
+//            }
+//
+//            // Continue only if the File was successfully created
+//            if (photoFile != null) {
+//
+//                Uri photoURI = FileProvider.getUriForFile(
+//                        this,
+//                        "com.example.android.fileprovider",
+//                        photoFile
+//                );
+//
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(takePictureIntent, 1);
+//                galleryAddPic();
+//            }
+//        }
     }
 
     String currentPhotoPath;
