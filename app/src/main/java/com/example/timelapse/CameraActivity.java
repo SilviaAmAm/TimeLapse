@@ -61,12 +61,11 @@ public class CameraActivity extends AppCompatActivity {
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                PictureCallback[] picCallbackArray = new PictureCallback[checkedNPhotos];
+                PictureCallback picCallback = createPictureCallback();
 
                 for (int photoCount = 0; photoCount < checkedNPhotos; photoCount++ ) {
 
-                    picCallbackArray[photoCount] = createPictureCallback();
-                    mCamera.takePicture(null, null, picCallbackArray[photoCount]);
+                    mCamera.takePicture(null, null, picCallback);
                     Log.d(TAG, "Number of pictures taken: " + (photoCount+1));
 
                     // Give the effect of stopping (essential, otherwise callback doesnt work)
