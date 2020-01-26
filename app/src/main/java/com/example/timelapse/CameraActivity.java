@@ -2,6 +2,7 @@ package com.example.timelapse;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.core.content.pm.PackageInfoCompat;
 
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
@@ -20,8 +21,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
-
 public class CameraActivity extends AppCompatActivity {
 
     private Camera mCamera;
@@ -33,6 +32,22 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
+        Bundle extras = getIntent().getExtras();
+
+        // Get extras
+        int nPhotosToTake = 10;
+        int photosDt = 10;
+
+        try {
+            nPhotosToTake = extras.getInt("N_PHOTOS");
+            photosDt = extras.getInt("DELAY");
+        } catch (NullPointerException e) {
+            Log.d(TAG, "Could extract parameters: " + e);
+        }
+
+        final int checkedNPhotos = nPhotosToTake;
+        final int checkedPhotosDt = photosDt;
+
         // Create an instance of Camera
         mCamera = getCameraInstance();
 
@@ -41,17 +56,37 @@ public class CameraActivity extends AppCompatActivity {
         FrameLayout preview = findViewById(R.id.camera_preview);
         preview.addView(mPreview);
 
-
         Button captureButton = findViewById(R.id.button_capture);
+
         captureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                System.out.print("HOLLAAA dalla camera\n");
 
-//                mCamera.takePicture(null, null, mPicture);
+                PictureCallback[] picCallbackArray = new PictureCallback[checkedNPhotos];
+
+                for (int photoCount = 0; photoCount < checkedNPhotos; photoCount++ ) {
+
+                    picCallbackArray[photoCount] = createPictureCallback();
+                    mCamera.takePicture(null, null, picCallbackArray[photoCount]);
+                    Log.d(TAG, "Number of pictures taken: " + (photoCount+1));
+
+                    // Give the effect of stopping (essential, otherwise callback doesnt work)
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        Log.d(TAG, "Error with sleep: " + e);
+                    }
+                    mCamera.startPreview();
+
+                    // Wait for delay
+                    try {
+                        Thread.sleep((checkedPhotosDt*1000-500));
+                    } catch (InterruptedException e) {
+                        Log.d(TAG, "Error with sleep: " + e);
+                    }
+                }
             }
         });
     }
-
 
     /** A safe way to get an instance of the Camera object. */
     public static Camera getCameraInstance(){
@@ -66,11 +101,38 @@ public class CameraActivity extends AppCompatActivity {
         return c; // returns null if camera is unavailable
     }
 
-    private void releaseCamera(){
-        if (mCamera != null){
-            mCamera.release();        // release the camera for other applications
-            mCamera = null;
-        }
+    PictureCallback createPictureCallback(){
+
+        PictureCallback picture = new PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, Camera camera) {
+
+                // Create an output file that will contain the photo
+                File photoFile = null;
+
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException e) {
+                    // Error occurred while creating the File
+                    Log.d(TAG, "Could not create a new image file: " + e);
+                }
+
+                if (photoFile != null) {
+                    try {
+                        FileOutputStream photoFileOutput = new FileOutputStream(photoFile);
+                        photoFileOutput.write(data);
+                        photoFileOutput.close();
+                    } catch (FileNotFoundException e) {
+                        Log.d(TAG, "Could not bind the output stream with the file created: " + e);
+                    } catch (IOException e) {
+                        Log.d(TAG, "Could not bind the output stream with the file created: " + e);
+                    }
+                }
+
+            }
+        };
+
+        return picture;
     }
 
     private File createImageFile() throws IOException {
@@ -86,6 +148,5 @@ public class CameraActivity extends AppCompatActivity {
 
         return image;
     }
-
 }
 
