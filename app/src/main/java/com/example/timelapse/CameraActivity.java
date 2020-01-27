@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -66,7 +67,6 @@ public class CameraActivity extends AppCompatActivity {
                 for (int photoCount = 0; photoCount < checkedNPhotos; photoCount++ ) {
 
                     mCamera.takePicture(null, null, picCallback);
-                    Log.d(TAG, "Number of pictures taken: " + (photoCount+1));
 
                     // Give the effect of stopping (essential, otherwise callback doesnt work)
                     try {
@@ -76,11 +76,16 @@ public class CameraActivity extends AppCompatActivity {
                     }
                     mCamera.startPreview();
 
-                    // Wait for delay
-                    try {
-                        Thread.sleep((checkedPhotosDt*1000-500));
-                    } catch (InterruptedException e) {
-                        Log.d(TAG, "Error with sleep: " + e);
+                    // If its the last loop, skip the sleeping
+                    if (photoCount == checkedNPhotos-1) {
+                        return;
+                    } else {
+                        // Wait for delay
+                        try {
+                            Thread.sleep((checkedPhotosDt * 1000 - 500));
+                        } catch (InterruptedException e) {
+                            Log.d(TAG, "Error with sleep: " + e);
+                        }
                     }
                 }
             }
