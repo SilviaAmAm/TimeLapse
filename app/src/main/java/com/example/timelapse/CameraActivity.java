@@ -79,7 +79,6 @@ public class CameraActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         Log.d(TAG, "Error with sleep: " + e);
                     }
-                    mCamera.startPreview();
 
                     // If its the last loop, skip the sleeping
                     if (photoCount == checkedNPhotos-1) {
@@ -92,6 +91,8 @@ public class CameraActivity extends AppCompatActivity {
                             Log.d(TAG, "Error with sleep: " + e);
                         }
                     }
+
+                    mCamera.startPreview();
                 }
             }
         });
@@ -146,7 +147,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
